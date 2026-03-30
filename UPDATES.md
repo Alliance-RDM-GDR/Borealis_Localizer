@@ -1,6 +1,11 @@
-# Translation Assistant Updates
+# Borealis Localizer Updates
 
 > Keep this log cupdated. Add a new entry for every meaningful change merged into the main branch so the team has a quick reference to recent improvements.
+
+## 2026-03-30
+- Updated terminology across the UI and documentation to use "Source language" and "Target language" rather than explicitly "English" and "French".
+- Refactored the core script `app.js` architecture to handle language-agnostic logic.
+- Included a `QuickStart.md` to guide new users to the tool.
 
 ## 2025-11-03
 - Combined the “missing” filter with detection of modified translations, including row highlighting and key-group filtering support.

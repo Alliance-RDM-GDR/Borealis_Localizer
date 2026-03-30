@@ -1,6 +1,6 @@
-# Translation Assistant Architecture
+# Borealis Localizer Architecture
 
-Translation Assistant is a static, browser-only application. All logic executes client-side and leverages standard Web APIs—no build tools or external dependencies are required.
+Borealis Localizer is a static, browser-only application. All logic executes client-side and leverages standard Web APIs—no build tools or external dependencies are required.
 
 ## High-Level Overview
 
@@ -12,10 +12,10 @@ assets/     →  Static image or supporting files (optional, not currently used 
 ```
 
 ## Application State
-- **englishContent / frenchContent** – Parsed key-value maps for each language.
-- **englishRawLines** – Original English file lines preserved for export ordering.
-- **frenchRawValues** – Baseline French values for comparison/highlighting.
-- **englishKeyOrder** – Ordered list of English keys to maintain consistent table rendering.
+- **sourceContent / targetContent** – Parsed key-value maps for each language.
+- **sourceRawLines** – Original Source language file lines preserved for export ordering.
+- **targetRawValues** – Baseline Target language values for comparison/highlighting.
+- **sourceKeyOrder** – Ordered list of Source language keys to maintain consistent table rendering.
 - **alignmentData** – Tracks duplicate keys in each language for the alignment summary panel.
 - **Local Storage (`translations`)** – Persists user edits between sessions.
 
@@ -27,8 +27,8 @@ assets/     →  Static image or supporting files (optional, not currently used 
 - `resolveFileUrl(input)` – Converts GitHub “blob/raw” URLs to their corresponding `raw.githubusercontent.com` endpoints.
 
 ### Rendering & Filtering
-- `renderTable(english, french)` – Builds table rows in original key order, applies category filter, search filter, and combined missing/changed toggle. Highlights missing (`highlight-missing`) and modified (`highlight-modified`) rows.
-- `updateKeyCategoryOptions(keys)` – Populates the key-group dropdown based on English prefixes (substring before first `.`).
+- `renderTable(source, target)` – Builds table rows in original key order, applies category filter, search filter, and combined missing/changed toggle. Highlights missing (`highlight-missing`) and modified (`highlight-modified`) rows.
+- `updateKeyCategoryOptions(keys)` – Populates the key-group dropdown based on Source language prefixes (substring before first `.`).
 - `updateAlignmentSummary()` – Compares key sets, reporting missing, extra, and duplicate entries in the info panel.
 
 ### Editing & Normalization
@@ -37,7 +37,7 @@ assets/     →  Static image or supporting files (optional, not currently used 
 - `escapeHTML` / `escapeForProperties` – Sanitize values for display/export.
 
 ### Export & Preview
-- `exportFrenchFile(mode)` – Generates a Blob in ISO-8859-1 encoding (`mode` = `all` or `missing`), preserving original comments and ordering from the English source.
+- `exportTargetFile(mode)` – Generates a Blob in ISO-8859-1 encoding (`mode` = `all` or `missing`), preserving original comments and ordering from the Source language source.
 - `preview` handler – Renders the same output to the onscreen preview area without triggering a download.
 
 ### UI Controls
@@ -53,7 +53,7 @@ Upload / Fetch → readPropertiesFile → State Update → updateKeyCategoryOpti
                                            ↓
                               localStorage ↔ handleTranslationInput
                                            ↓
-                                 exportFrenchFile / preview
+                                 exportTargetFile / preview
 ```
 
 ## Extensibility Notes

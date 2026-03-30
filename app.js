@@ -1,9 +1,9 @@
-let englishContent = {};
-let frenchContent = {};
-let englishRawLines = [];
-let frenchRawValues = {};
-let englishKeyOrder = [];
-const alignmentData = { duplicateEnglish: [], duplicateFrench: [] };
+let sourceContent = {};
+let targetContent = {};
+let sourceRawLines = [];
+let targetRawValues = {};
+let sourceKeyOrder = [];
+const alignmentData = { duplicateSource: [], duplicateTarget: [] };
 const fileEncodings = { en: "utf-8", fr: "utf-8" };
 const SMART_CHAR_REPLACEMENTS = {
   "\u2018": "'",
@@ -148,22 +148,22 @@ function setButtonLoadingState(button, isLoading, loadingLabel = "Loading...") {
 }
 
 document.getElementById("compareBtn").addEventListener("click", () => {
-  const englishFile = document.getElementById("englishFile").files[0];
-  const frenchFile = document.getElementById("frenchFile").files[0];
+  const sourceFile = document.getElementById("sourceFile").files[0];
+  const targetFile = document.getElementById("targetFile").files[0];
 
-  if (!englishFile || !frenchFile) {
-    alert("Please upload both English and French .properties files.");
+  if (!sourceFile || !targetFile) {
+    alert("Please upload both Source language and Target language .properties files.");
     return;
   }
 
   Promise.all([
-    readPropertiesFile(englishFile, "en"),
-    readPropertiesFile(frenchFile, "fr")
-  ]).then(([engData, frData]) => {
-    englishContent = engData;
-    frenchContent = frData;
-    updateKeyCategoryOptions(Object.keys(englishContent));
-    renderTable(englishContent, frenchContent);
+    readPropertiesFile(sourceFile, "source"),
+    readPropertiesFile(targetFile, "target")
+  ]).then(([sourceData, targetData]) => {
+    sourceContent = sourceData;
+    targetContent = targetData;
+    updateKeyCategoryOptions(Object.keys(sourceContent));
+    renderTable(sourceContent, targetContent);
     updateAlignmentSummary();
   });
 });
@@ -171,22 +171,22 @@ document.getElementById("compareBtn").addEventListener("click", () => {
 const loadGithubBtn = document.getElementById("loadGithubBtn");
 if (loadGithubBtn) {
   loadGithubBtn.addEventListener("click", async () => {
-    const englishPathInput =
-      document.getElementById("githubEnglishPath")?.value.trim() || "";
-    const frenchPathInput =
-      document.getElementById("githubFrenchPath")?.value.trim() || "";
+    const sourcePathInput =
+      document.getElementById("githubSource languagePath")?.value.trim() || "";
+    const targetPathInput =
+      document.getElementById("githubTarget languagePath")?.value.trim() || "";
 
-    if (!englishPathInput || !frenchPathInput) {
-      alert("Please provide both English and French file paths or URLs.");
+    if (!sourcePathInput || !targetPathInput) {
+      alert("Please provide both Source language and Target language file paths or URLs.");
       return;
     }
 
-    let englishUrl;
-    let frenchUrl;
+    let sourceUrl;
+    let targetUrl;
 
     try {
-      englishUrl = resolveFileUrl(englishPathInput);
-      frenchUrl = resolveFileUrl(frenchPathInput);
+      sourceUrl = resolveFileUrl(sourcePathInput);
+      targetUrl = resolveFileUrl(targetPathInput);
     } catch (error) {
       alert(error.message);
       return;
@@ -195,26 +195,26 @@ if (loadGithubBtn) {
     setButtonLoadingState(loadGithubBtn, true);
 
     try {
-      const [englishBlob, frenchBlob] = await Promise.all([
+      const [sourceBlob, targetBlob] = await Promise.all([
         fetchGithubFile({
-          url: englishUrl,
-          fallbackName: englishPathInput
+          url: sourceUrl,
+          fallbackName: sourcePathInput
         }),
         fetchGithubFile({
-          url: frenchUrl,
-          fallbackName: frenchPathInput
+          url: targetUrl,
+          fallbackName: targetPathInput
         })
       ]);
 
-      const [engData, frData] = await Promise.all([
-        readPropertiesFile(englishBlob, "en"),
-        readPropertiesFile(frenchBlob, "fr")
+      const [sourceData, targetData] = await Promise.all([
+        readPropertiesFile(sourceBlob, "source"),
+        readPropertiesFile(targetBlob, "target")
       ]);
 
-      englishContent = engData;
-      frenchContent = frData;
-      updateKeyCategoryOptions(Object.keys(englishContent));
-      renderTable(englishContent, frenchContent);
+      sourceContent = sourceData;
+      targetContent = targetData;
+      updateKeyCategoryOptions(Object.keys(sourceContent));
+      renderTable(sourceContent, targetContent);
       updateAlignmentSummary();
     } catch (error) {
       console.error("GitHub load failed:", error);
@@ -266,12 +266,12 @@ function readPropertiesFile(file, lang) {
 
         fileEncodings[lang] = encoding;
 
-        if (lang === "en") {
-          englishRawLines = [...lines];
-          englishKeyOrder = [];
+        if (lang === "source") {
+          sourceRawLines = [...lines];
+          sourceKeyOrder = [];
         }
-        if (lang === "fr") {
-          frenchRawValues = {};
+        if (lang === "target") {
+          targetRawValues = {};
         }
 
         lines.forEach(line => {
@@ -286,25 +286,25 @@ function readPropertiesFile(file, lang) {
             duplicateKeys.add(cleanKey);
           } else {
             seenKeys.add(cleanKey);
-            if (lang === "en") englishKeyOrder.push(cleanKey);
+            if (lang === "source") sourceKeyOrder.push(cleanKey);
           }
 
           result[cleanKey] = value;
 
-          if (lang === "fr") {
-            frenchRawValues[cleanKey] = value;
+          if (lang === "target") {
+            targetRawValues[cleanKey] = value;
           }
         });
 
-        if (lang === "en") {
-          alignmentData.duplicateEnglish = Array.from(duplicateKeys).sort((a, b) =>
+        if (lang === "source") {
+          alignmentData.duplicateSource = Array.from(duplicateKeys).sort((a, b) =>
             a.localeCompare(b)
           );
         }
 
-        if (lang === "fr") frenchContent = result;
-        if (lang === "fr") {
-          alignmentData.duplicateFrench = Array.from(duplicateKeys).sort((a, b) =>
+        if (lang === "target") targetContent = result;
+        if (lang === "target") {
+          alignmentData.duplicateTarget = Array.from(duplicateKeys).sort((a, b) =>
             a.localeCompare(b)
           );
         }
@@ -399,7 +399,7 @@ function syncRowHighlightState(key, textarea, value) {
   const row = textarea.closest("tr");
   if (!row) return;
 
-  const baseline = frenchRawValues[key] ?? "";
+  const baseline = targetRawValues[key] ?? "";
   const normalizedCurrent =
     typeof value === "string" ? value.trim() : String(value ?? "").trim();
   const normalizedBaseline =
@@ -458,21 +458,21 @@ function renderTable(english, french) {
   tableBody.innerHTML = "";
   tableSection.classList.remove("hidden");
 
-  const keysInOrder = englishKeyOrder.length ? englishKeyOrder : Object.keys(english);
+  const keysInOrder = sourceKeyOrder.length ? sourceKeyOrder : Object.keys(english);
 
   keysInOrder.forEach(key => {
-    const englishValue = english[key];
-    const engText =
-      typeof englishValue === "string" ? englishValue : String(englishValue ?? "");
+    const sourceValue = english[key];
+    const sourceText =
+      typeof sourceValue === "string" ? sourceValue : String(sourceValue ?? "");
 
     if (selectedCategory && extractKeyCategory(key) !== selectedCategory) return;
 
     const stored = getSavedTranslation(key);
     const hasStored = stored !== null && stored !== undefined;
-    const baseline = frenchRawValues[key] ?? "";
-    const frText = hasStored ? stored : (french[key] ?? "");
+    const baseline = targetRawValues[key] ?? "";
+    const targetText = hasStored ? stored : (french[key] ?? "");
     const normalizedCurrent =
-      typeof frText === "string" ? frText.trim() : String(frText ?? "").trim();
+      typeof targetText === "string" ? targetText.trim() : String(targetText ?? "").trim();
     const normalizedBaseline =
       typeof baseline === "string" ? baseline.trim() : String(baseline ?? "").trim();
     const isMissing = normalizedCurrent === "";
@@ -481,12 +481,12 @@ function renderTable(english, french) {
     if (showOnlyMissing && !isMissing && !isModified) return;
 
     const keyMatch = key.toLowerCase().includes(searchTerm);
-    const engLower = engText.toLowerCase();
-    const frLower =
-      typeof frText === "string" ? frText.toLowerCase() : String(frText ?? "").toLowerCase();
-    const engMatch = engLower.includes(searchTerm);
-    const frMatch = frLower.includes(searchTerm);
-    const matches = !searchTerm || keyMatch || engMatch || frMatch;
+    const sourceLower = sourceText.toLowerCase();
+    const targetLower =
+      typeof targetText === "string" ? targetText.toLowerCase() : String(targetText ?? "").toLowerCase();
+    const sourceMatch = sourceLower.includes(searchTerm);
+    const targetMatch = targetLower.includes(searchTerm);
+    const matches = !searchTerm || keyMatch || sourceMatch || targetMatch;
     if (!matches) return;
 
     const row = document.createElement("tr");
@@ -503,7 +503,7 @@ function renderTable(english, french) {
 
     row.innerHTML = `
       <td>${highlight(key, searchTerm)}</td>
-      <td>${highlight(engText, searchTerm)}</td>
+      <td>${highlight(sourceText, searchTerm)}</td>
       <td>
         <textarea
           data-key="${key}"
@@ -513,7 +513,7 @@ function renderTable(english, french) {
           autocomplete="off"
           inputmode="text"
           oninput="handleTranslationInput('${key}', this)"
-        >${escapeHTML(frText)}</textarea>
+        >${escapeHTML(targetText)}</textarea>
       </td>
     `;
 
@@ -536,20 +536,20 @@ function updateAlignmentSummary() {
   const summaryEl = document.getElementById("alignmentSummary");
   if (!summaryEl) return;
 
-  if (!englishKeyOrder.length) {
+  if (!sourceKeyOrder.length) {
     summaryEl.classList.add("hidden");
     summaryEl.innerHTML = "";
     return;
   }
 
-  const englishKeySet = new Set(englishKeyOrder);
-  const frenchKeys = Object.keys(frenchContent || {});
-  const missingInFrench = englishKeyOrder.filter(
-    key => !Object.prototype.hasOwnProperty.call(frenchContent, key)
+  const sourceKeySet = new Set(sourceKeyOrder);
+  const targetKeys = Object.keys(targetContent || {});
+  const missingInTarget language = sourceKeyOrder.filter(
+    key => !Object.prototype.hasOwnProperty.call(targetContent, key)
   );
-  const extraInFrench = frenchKeys.filter(key => !englishKeySet.has(key));
-  const duplicateEnglish = alignmentData.duplicateEnglish;
-  const duplicateFrench = alignmentData.duplicateFrench;
+  const extraInTarget language = targetKeys.filter(key => !sourceKeySet.has(key));
+  const duplicateSource = alignmentData.duplicateSource;
+  const duplicateTarget = alignmentData.duplicateTarget;
 
   const issues = [];
   const appendIssue = (label, keys) => {
@@ -561,10 +561,10 @@ function updateAlignmentSummary() {
     );
   };
 
-  appendIssue("keys missing in French file", missingInFrench);
-  appendIssue("extra keys only in French file", extraInFrench);
-  appendIssue("duplicate keys in English file", duplicateEnglish);
-  appendIssue("duplicate keys in French file", duplicateFrench);
+  appendIssue("keys missing in Target language file", missingInTarget language);
+  appendIssue("extra keys only in Target language file", extraInTarget language);
+  appendIssue("duplicate keys in Source language file", duplicateSource);
+  appendIssue("duplicate keys in Target language file", duplicateTarget);
 
   summaryEl.classList.remove("hidden");
 
@@ -620,32 +620,32 @@ function handleTranslationInput(key, textarea) {
 }
 
 document.getElementById("toggleMissing").addEventListener("change", () => {
-  renderTable(englishContent, frenchContent);
+  renderTable(sourceContent, targetContent);
 });
 
 document.getElementById("searchInput").addEventListener("input", () => {
-  renderTable(englishContent, frenchContent);
+  renderTable(sourceContent, targetContent);
 });
 
 document.getElementById("keyCategory").addEventListener("change", () => {
-  renderTable(englishContent, frenchContent);
+  renderTable(sourceContent, targetContent);
 });
 
 document.getElementById("exportBtn").addEventListener("click", () => {
-  exportFrenchFile("all");
+  exportTargetFile("all");
 });
 
 document.getElementById("exportMissingBtn").addEventListener("click", () => {
-  exportFrenchFile("missing");
+  exportTargetFile("missing");
 });
 
-function exportFrenchFile(mode = "all") {
+function exportTargetFile(mode = "all") {
   const stored = localStorage.getItem("translations");
   const updated = stored ? JSON.parse(stored) : {};
 
   const outputLines = [];
 
-  englishRawLines.forEach(line => {
+  sourceRawLines.forEach(line => {
     const trimmed = line.trim();
 
     if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) {
@@ -655,7 +655,7 @@ function exportFrenchFile(mode = "all") {
       const cleanKey = key.trim();
       const newValue =
         escapeForProperties(updated[cleanKey]) ||
-        escapeForProperties(frenchRawValues[cleanKey]) ||
+        escapeForProperties(targetRawValues[cleanKey]) ||
         "";
 
       if (mode === "missing" && newValue) return; // skip filled
@@ -695,7 +695,7 @@ document.getElementById("previewBtn").addEventListener("click", () => {
 
   const lines = [];
 
-  englishRawLines.forEach(line => {
+  sourceRawLines.forEach(line => {
     const trimmed = line.trim();
 
     if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) {
@@ -705,7 +705,7 @@ document.getElementById("previewBtn").addEventListener("click", () => {
       const cleanKey = key.trim();
       const newValue =
         escapeForProperties(updated[cleanKey]) ||
-        escapeForProperties(frenchRawValues[cleanKey]) ||
+        escapeForProperties(targetRawValues[cleanKey]) ||
         "";
 
       lines.push(`${cleanKey}=${newValue}`);

@@ -1,12 +1,12 @@
-# Translation Assistant
+# Borealis Localizer
 
-Translation Assistant is a client-side web tool that compares two `.properties` files (typically English and French), highlights missing or changed translations, and helps translators export updated bundles safely. The app works completely in the browser, so your files stay local unless you choose to fetch them from GitHub.
+Borealis Localizer is a client-side web tool that compares two `.properties` files (typically Source language and Target language), highlights missing or changed translations, and helps translators export updated bundles safely. The app works completely in the browser, so your files stay local unless you choose to fetch them from GitHub.
 
 ## Key Features
-- Upload local English/French `.properties` files or load them directly from GitHub raw/blob URLs.
+- Upload local Source language/Target language `.properties` files or load them directly from GitHub raw/blob URLs.
 - Detect missing or modified translations, filter by key group, and search across keys and text.
 - Inline editing with smart-punctuation normalization and ISO-8859-1 character warnings.
-- Export full or missing-only French bundles and preview the output before download.
+- Export full or missing-only Target language bundles and preview the output before download.
 - Alignment summary reports duplicate keys and unmatched entries between languages.
 
 ## Getting Started
@@ -18,7 +18,7 @@ Translation Assistant is a client-side web tool that compares two `.properties` 
 - Use the **Key group** selector to focus on sections (e.g., `datasetfieldtype`).
 - Toggle **Show only missing or changed translations** to narrow reviews.
 - Hover over a highlighted textarea to see unsupported characters that should be corrected before export.
-- Use the preview and export buttons after you finish editing to review the generated French bundle.
+- Use the preview and export buttons after you finish editing to review the generated Target language bundle.
 
 ## Architecture & Contributing
 - See [ARCHITECTURE.md](ARCHITECTURE.md) for a breakdown of the app structure and data flow.
