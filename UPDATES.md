@@ -6,6 +6,7 @@
 - Updated terminology across the UI and documentation to use "Source language" and "Target language" rather than explicitly "English" and "French".
 - Refactored the core script `app.js` architecture to handle language-agnostic logic.
 - Included a `QuickStart.md` to guide new users to the tool.
+- Added a prominent yellow Quick Start Guide button to the app header for direct manual access.
 
 ## 2025-11-03
 - Combined the “missing” filter with detection of modified translations, including row highlighting and key-group filtering support.
