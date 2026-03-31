@@ -2,6 +2,13 @@
 
 Welcome to the Borealis Localizer! This is a client-side tool to help you compare, edit, and export `.properties` files for translations within the Borealis dataverse.
 
+## Accessing the App
+The app is permanently hosted online. You do not need to download or install any code.
+
+👉 **[Open Borealis Localizer App](https://alliance.github.io/Borealis_Localizer/)**
+
+---
+
 ## Table of Contents
 1. [Loading Files](#1-loading-files)
 2. [Translating](#2-translating)

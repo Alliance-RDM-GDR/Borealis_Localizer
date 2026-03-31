@@ -1,5 +1,10 @@
 # Borealis Localizer
 
+## 🌍 Access the Live App
+The official hosted tool is available at: **[https://alliance.github.io/Borealis_Localizer/](https://alliance.github.io/Borealis_Localizer/)**
+No installation or setup required.
+
+
 Borealis Localizer is a client-side web tool that compares two `.properties` files (typically Source language and Target language), highlights missing or changed translations, and helps translators export updated bundles safely. The app works completely in the browser, so your files stay local unless you choose to fetch them from GitHub.
 
 ## Key Features
