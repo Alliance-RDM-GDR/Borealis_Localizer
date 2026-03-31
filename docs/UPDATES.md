@@ -2,6 +2,10 @@
 
 > Keep this log cupdated. Add a new entry for every meaningful change merged into the main branch so the team has a quick reference to recent improvements.
 
+## 2026-03-31
+- Re-organized the repository into a structured `js/`, `css/` and `docs/` hierarchy to keep the root directory completely clean for deployment.
+- Deployed the application officially via GitHub Pages. Added live access links to the README and QuickStart guides.
+
 ## 2026-03-30
 - Updated terminology across the UI and documentation to use "Source language" and "Target language" rather than explicitly "English" and "French".
 - Refactored the core script `app.js` architecture to handle language-agnostic logic.

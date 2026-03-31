@@ -6,9 +6,9 @@ Borealis Localizer is a static, browser-only application. All logic executes cli
 
 ```
 index.html  →  Defines layout, upload controls, GitHub inputs, data table, and action buttons.
-styles.css  →  Handles global styling, filter controls, textarea appearance, and status highlighting.
-app.js      →  Contains state management, file decoding, rendering, export, and normalization logic.
-assets/     →  Static image or supporting files (optional, not currently used by core flow).
+css/        →  Contains styles.css for global styling and layout.
+js/         →  Contains app.js for state management, decoding, and client-side logic.
+docs/       →  Contains project documentation, logs, and architecture details.
 ```
 
 ## Application State
