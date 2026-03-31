@@ -1,7 +1,7 @@
 # Borealis Localizer
 
 ## 🌍 Access the Live App
-The official hosted tool is available at: **[https://alliance.github.io/Borealis_Localizer/](https://alliance.github.io/Borealis_Localizer/)**
+The official hosted tool is available at: **[https://alliance-rdm-gdr.github.io/Borealis_Localizer/](https://alliance-rdm-gdr.github.io/Borealis_Localizer/)**
 No installation or setup required.
 
 

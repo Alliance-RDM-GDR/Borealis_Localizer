@@ -5,7 +5,7 @@ Welcome to the Borealis Localizer! This is a client-side tool to help you compar
 ## Accessing the App
 The app is permanently hosted online. You do not need to download or install any code.
 
-👉 **[Open Borealis Localizer App](https://alliance.github.io/Borealis_Localizer/)**
+👉 **[Open Borealis Localizer App](https://alliance-rdm-gdr.github.io/Borealis_Localizer/)**
 
 ---
 
