@@ -172,9 +172,9 @@ const loadGithubBtn = document.getElementById("loadGithubBtn");
 if (loadGithubBtn) {
   loadGithubBtn.addEventListener("click", async () => {
     const sourcePathInput =
-      document.getElementById("githubSource languagePath")?.value.trim() || "";
+      document.getElementById("githubSourcePath")?.value.trim() || "";
     const targetPathInput =
-      document.getElementById("githubTarget languagePath")?.value.trim() || "";
+      document.getElementById("githubTargetPath")?.value.trim() || "";
 
     if (!sourcePathInput || !targetPathInput) {
       alert("Please provide both Source language and Target language file paths or URLs.");
@@ -544,10 +544,10 @@ function updateAlignmentSummary() {
 
   const sourceKeySet = new Set(sourceKeyOrder);
   const targetKeys = Object.keys(targetContent || {});
-  const missingInTarget language = sourceKeyOrder.filter(
+  const missingInTarget = sourceKeyOrder.filter(
     key => !Object.prototype.hasOwnProperty.call(targetContent, key)
   );
-  const extraInTarget language = targetKeys.filter(key => !sourceKeySet.has(key));
+  const extraInTarget = targetKeys.filter(key => !sourceKeySet.has(key));
   const duplicateSource = alignmentData.duplicateSource;
   const duplicateTarget = alignmentData.duplicateTarget;
 
@@ -561,8 +561,8 @@ function updateAlignmentSummary() {
     );
   };
 
-  appendIssue("keys missing in Target language file", missingInTarget language);
-  appendIssue("extra keys only in Target language file", extraInTarget language);
+  appendIssue("keys missing in Target language file", missingInTarget);
+  appendIssue("extra keys only in Target language file", extraInTarget);
   appendIssue("duplicate keys in Source language file", duplicateSource);
   appendIssue("duplicate keys in Target language file", duplicateTarget);
 
